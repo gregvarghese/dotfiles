@@ -1,42 +1,27 @@
 [user]
-	name = James Tomasino
-	email = james@tomasino.org
-[http]
-	postBuffer = 524288000
-[core]
-	whitespace = trailing-space, space-before-tab
-	excludesfile = ~/.gitignore_global
-	editor = 'vim'
-[color]
-	diff = auto
-	status = auto
-	branch = auto
-	interactive = auto
-	ui = auto
-[diff]
-	mnemonicprefix = true
-	suppressBlankEmpty = true
-	tool = diffmerge
-[merge]
-	stat = true
-	tool = fugitive
-[mergetool "fugitive"]
-	cmd = vim -f -c "Gdiff" "$MERGED"
-[mergetool "vimdiff3"]
-	cmd = vim -f -d -c \"wincmd J\" \"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
-[mergetool "diffmerge"]
-	cmd = "diffmerge --merge --result=\"$MERGED\" \"$LOCAL\" \"$(if test -f \"$BASE\"; then echo \"$BASE\"; else echo \"$LOCAL\"; fi)\" \"$REMOTE\""
-	trustExitCode = true
-[difftool "diffmerge"]
-	cmd = diffmerge \"$LOCAL\" \"$REMOTE\"
+	name = gregoryvarghese
+	email = gregory.varghese@gsw-w.com
 [mergetool]
-	keepBackup = false
-[branch]
-	autosetupmerge = true
+	keepBackup = true
+[core]
+	excludesfile = /Users/gregory.varghese/.gitignore_global
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[diff]
+	tool = diffmerge
+[difftool "diffmerge"]
+	cmd = /usr/bin/diffmerge \"$LOCAL\" \"$REMOTE\"
+[merge]
+	tool = diffmerge
+[mergetool "diffmerge"]
+	trustExitCode = true
+	cmd = /usr/bin/diffmerge --merge --result=\"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
 [push]
-	default = tracking
-[rerere]
-	enabled = true
+	default = matching
 [advice]
 	statusHints = true
 
@@ -60,7 +45,7 @@
 	untracked = cyan
 
 [github]
-	user = jamestomasino
+	user = gregvarghese
 
 [alias]
 
