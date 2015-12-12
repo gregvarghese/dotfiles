@@ -4,7 +4,7 @@
 [mergetool]
 	keepBackup = true
 [core]
-	excludesfile = /Users/gregory.varghese/.gitignore_global
+	excludesfile = /Users/Greg/.gitignore
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
@@ -269,5 +269,6 @@
 
 	pconfig = config -f .git/config
 	up = "!git remote update -p; git merge --ff-only @{u}"
+	ac = !git add -A && git commit
 
 
