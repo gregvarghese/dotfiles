@@ -183,3 +183,21 @@ function gitexport(){
 	mkdir -p "$1"
 	git archive master | tar -x -C "$1"
 }
+
+function lazygit() {
+    git add .
+    git commit -a -m "$1"
+    git push
+}
+
+#   ---------------------------------------
+#    File System
+#   ---------------------------------------
+
+# Generates a tree view from the current directory
+function tree(){
+	pwd
+	ls -R | grep ":$" |   \
+	sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
+}
+
