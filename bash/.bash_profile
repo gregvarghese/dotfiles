@@ -102,6 +102,35 @@ cdf() {
              echo "'$1' is not a valid file"
          fi
     }
+    
+    
+# This bash function is more complicated but I use it all the time. 
+# It reads a list of items to be installed and compares it to a list of 
+# already existing items on your computer. This allows you only to 
+# install the items that are missing.
+
+function to_install() {
+  local debug desired installed i desired_s installed_s remain
+  if [[ "$1" == 1 ]]; then debug=1; shift; fi
+    # Convert args to arrays, handling both space- and newline-separated lists.
+    read -ra desired < <(echo "$1" | tr '\n' ' ')
+    read -ra installed < <(echo "$2" | tr '\n' ' ')
+    # Sort desired and installed arrays.
+    unset i; while read -r; do desired_s[i++]=$REPLY; done < <(
+      printf "%s\n" "${desired[@]}" | sort
+    )
+    unset i; while read -r; do installed_s[i++]=$REPLY; done < <(
+      printf "%s\n" "${installed[@]}" | sort
+    )
+    # Get the difference. comm is awesome.
+    unset i; while read -r; do remain[i++]=$REPLY; done < <(
+      comm -13 <(printf "%s\n" "${installed_s[@]}") <(printf "%s\n" "${desired_s[@]}")
+  )
+  [[ "$debug" ]] && for v in desired desired_s installed installed_s remain; do
+    echo "$v ($(eval echo "\${#$v[*]}")) $(eval echo "\${$v[*]}")"
+  done
+  echo "${remain[@]}"
+}    
 
 #   -----------------------------
 #     ALIASES
@@ -174,6 +203,28 @@ alias reload="source ~/.bash_profile"
 
 # weather from my current location
 alias weather="curl -s 'http://rss.accuweather.com/rss/liveweather_rss.asp?metric=1&locCode=en|us|belleville-nj|07109' | sed -n '/Currently:/ s/.*: \(.*\): \([0-9]*\)\([CF]\).*/\2°\3, \1/p'"
+
+## Use different browser for testing website ##
+alias ff4='/opt/firefox4/firefox'
+alias ff13='/opt/firefox13/firefox'
+alias chrome='/opt/google/chrome/chrome'
+alias opera='/opt/opera/opera'
+ 
+#default ff 
+alias ff=ff13
+ 
+#my default browser 
+alias browser=chrome
+
+#Grabs the disk usage in the current directory
+alias usage='du -ch 2> /dev/null |tail -1'
+#Gets the total disk usage on your machine
+alias totalusage='df -hl --total | grep total'
+#Shows the individual partition usages without the temporary memory values
+alias partusage='df -hlT --exclude-type=tmpfs --exclude-type=devtmpfs'
+#Gives you what is using the most space. Both directories and files. Varies on
+#current directory
+alias most='du -hsx * | sort -rh | head -10'
 
 #   ---------------------------------------
 #    GIT
