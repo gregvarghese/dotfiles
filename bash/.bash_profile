@@ -235,6 +235,8 @@ function gitexport(){
 	git archive master | tar -x -C "$1"
 }
 
+#My favorite git shortcut. Adds all changes, commits them with the specified message and pushes to the default repo in one shot. 
+# Usage: lazygit "{message here}"
 function lazygit() {
     git add .
     git commit -a -m "$1"
@@ -251,4 +253,19 @@ function tree(){
 	ls -R | grep ":$" |   \
 	sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
 }
+
+#   ---------------------------------------
+#    File System
+#   ---------------------------------------
+
+# Lists members of Admin group. 
+# Usage: members admin 
+# From https://superuser.com/questions/279891/list-all-members-of-a-group-mac-os-x
+
+members () {
+  dscl . -list /Users | while read user; do
+    printf "$user "
+    dsmemberutil checkmembership -U "$user" -G "$*"
+  done | grep "is a member" | cut -d " " -f 1;
+};
 
