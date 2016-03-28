@@ -45,18 +45,9 @@ PS1="\[$DIRECTORY_COLOR\]\w \[$GIT_COLOR\]\$(parse_git_branch)\[$STAGED_COLOR\]\
 
 # vim: set sw=4 ts=4 sts=4 et tw=78 nospell:
 
-update() {
-    local brew="brew update; brew upgrade;"
-    local gisty="gisty pull_all; gisty sync_delete"
-    local gem="gem update;"
-    local pip="pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip install -U -q"
-    sh -c $brew$gisty; sudo sh -c $gem$pip
-}
-
 #   -------------------------------
 #     Shell Functions
 #   -------------------------------
-
 zipf () { zip -r "$1".zip "$1" ; }          # zipf:         To create a ZIP archive of a folder
 
 
