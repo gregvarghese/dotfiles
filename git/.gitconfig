@@ -1,10 +1,10 @@
 [user]
-	name = gregoryvarghese
-	email = gregory.varghese@gsw-w.com
+	name = Gregory Varghese
+	email = gvarghese@bgbgroup.com
 [mergetool]
 	keepBackup = true
 [core]
-	excludesfile = /Users/Greg/.gitignore
+	excludesfile = /Users/gvarghese/.gitignore_global
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 

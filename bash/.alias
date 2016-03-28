@@ -70,8 +70,9 @@ alias showdeskicons="defaults write com.apple.finder CreateDesktop -bool true &&
 alias hidedeskicons="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
 alias lock='/System/Library/CoreServices/"Menu Extras"/User.menu/Contents/Resources/CGSession -suspend'
 alias ss='/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine'
-alias dext="find $1 -name '*.$2' -delete"
-alias fext="find $1 -name '*.$2'"
+alias dext=deletefilesbyextension
+alias fext=findfilesbyextension
+
 # Ubuntu specific
 alias hibernate='sh -c "dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock && dbus-send --system --print-reply --dest=org.freedesktop.UPower /org/freedesktop/UPower org.freedesktop.UPower.Suspend"'
 

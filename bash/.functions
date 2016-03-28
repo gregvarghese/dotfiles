@@ -491,6 +491,21 @@ function tree(){
 	sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
 }
 
+function findfilesbyextension()
+{	
+	echo $1;
+	echo $2;
+	find $1 -name *.$2;
+}
+
+
+function deletefilesbyextension()
+{	
+	echo $1;
+	echo $2;
+	find $1 -name *.$2 -delete;
+}
+
 #   ---------------------------------------
 #    File System
 #   ---------------------------------------
@@ -505,3 +520,4 @@ members () {
     dsmemberutil checkmembership -U "$user" -G "$*"
   done | grep "is a member" | cut -d " " -f 1;
 };
+
