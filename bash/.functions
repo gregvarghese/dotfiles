@@ -493,17 +493,21 @@ function tree(){
 
 function findfilesbyextension()
 {	
-	echo $1;
-	echo $2;
 	find $1 -name *.$2;
 }
 
 
 function deletefilesbyextension()
 {	
-	echo $1;
-	echo $2;
-	find $1 -name *.$2 -delete;
+	confirm "Would you really like to do a push?" && find $1 -name *.$2 -delete;
+}
+
+
+# Create symlink to a path in Apache. 
+# Usage linkapache "{Source Path}" "{Folder Name}"
+function linkapache()
+{
+	ln -s $1 /Applications/MAMP/htdocs/{2}
 }
 
 #   ---------------------------------------
@@ -521,3 +525,20 @@ members () {
   done | grep "is a member" | cut -d " " -f 1;
 };
 
+
+#
+# Internal Functions
+#
+
+confirm () {
+    # call with a prompt string or use a default
+    read -r -p "${1:-Are you sure? [y/N]} " response
+    case $response in
+        [yY][eE][sS]|[yY]) 
+            true
+            ;;
+        *)
+            false
+            ;;
+    esac
+}

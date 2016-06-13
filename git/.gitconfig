@@ -14,12 +14,12 @@
 [diff]
 	tool = diffmerge
 [difftool "diffmerge"]
-	cmd = /usr/bin/diffmerge \"$LOCAL\" \"$REMOTE\"
+	cmd = /usr/local/bin/diffmerge \"$LOCAL\" \"$REMOTE\"
 [merge]
 	tool = diffmerge
 [mergetool "diffmerge"]
 	trustExitCode = true
-	cmd = /usr/bin/diffmerge --merge --result=\"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
+	cmd = /usr/local/bin/diffmerge --merge --result=\"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
 [push]
 	default = matching
 [advice]

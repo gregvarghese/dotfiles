@@ -37,6 +37,10 @@ export RESET_COLOR="\033[m"
 # less settings
 export PAGER=less
 
+# ruby
+export GEM_HOME="$HOME/.gem"
+export GEM_PATH="$HOME/.gem"
+
 # path
 PATH=/usr/local/bin
 PATH=${PATH}:/opt/local/bin
@@ -57,6 +61,8 @@ PATH=${PATH}:${ANDROID_HOME}/platform-tools
 PATH=${PATH}:/Library/Frameworks/Python.framework/Versions/Current/bin
 PATH=${PATH}:${HOME}/.rvm/bin
 PATH=${PATH}:${HOME}/.node/bin
+PATH=${PATH}:${HOME}/.gem/bin
+
 
 # options
 shopt -s cdspell
