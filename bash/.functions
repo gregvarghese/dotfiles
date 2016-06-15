@@ -88,6 +88,12 @@ function server() {
 	python -c $'import SimpleHTTPServer;\nmap = SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map;\nmap[""] = "text/plain";\nfor key, value in map.items():\n\tmap[key] = value + ";charset=UTF-8";\nSimpleHTTPServer.test();' "$port"
 }
 
+function cdfs()
+{
+	cdf
+	server
+}
+
 # Start a PHP server from a directory, optionally specifying the port
 # (Requires PHP 5.4.0+.)
 function phpserver() {
@@ -352,6 +358,12 @@ cdf() {
    local file
    local dir
    file=$(fzf +m -q "$1") && dir=$(dirname "$file") && cd "$dir"
+}
+
+# Flattens files from a current directory. If files already exist, you'll be prompted to decide if you want to overwrite or not. 
+flatten(){
+	local dir
+	find $PWD -mindepth 2 -type f -exec mv -i '{}' $PWD/ ';'
 }
 
 # fkill - kill process
