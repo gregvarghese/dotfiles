@@ -281,6 +281,12 @@ flatten(){
 	find $PWD -mindepth 2 -type f -exec mv -i '{}' $PWD/ ';'
 }
 
+# Flattens files from a current directory and overwrites matching files without prompting. 
+flatteni(){
+  local dir
+  find $PWD -mindepth 2 -type f -exec mv -n '{}' $PWD/ ';'
+}
+
 # fkill - kill process
 fkill() {
   pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
