@@ -93,6 +93,9 @@ alias qfind="find . -name "                 # qfind:    Quickly search for file
 ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the current directory
 ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
 ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
+fld () { /usr/bin/find . -name "$@" -type d 2>&1| grep -v 'Permission denied' ; }  # fld:      Find folder whose name matches string. Hides permission denied errors.
+
+
 #   memHogsTop, memHogsPs:  Find memory hogs
 #   -----------------------------------------------------
 alias memHogsTop='top -l 1 -o rsize | head -20'
