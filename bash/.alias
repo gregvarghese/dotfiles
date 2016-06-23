@@ -94,6 +94,10 @@ ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the curr
 ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
 ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
 fld () { /usr/bin/find . -name "$@" -type d 2>&1| grep -v 'Permission denied' ; }  # fld:      Find folder whose name matches string. Hides permission denied errors.
+alias append=appendstringtofilename 		
+alias pappend=previewappendstringtofilename
+alias prepend=prependstringtofilename 		
+alias pprepend=previewprependstringtofilename
 
 
 #   memHogsTop, memHogsPs:  Find memory hogs
@@ -102,11 +106,11 @@ alias memHogsTop='top -l 1 -o rsize | head -20'
 alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
 #   cpuHogs:  Find CPU hogs
 #   -----------------------------------------------------
-    alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
+alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
 
 #   topForever:  Continual 'top' listing (every 10 seconds)
 #   -----------------------------------------------------
-    alias topForever='top -l 9999999 -s 10 -o cpu'
+alias topForever='top -l 9999999 -s 10 -o cpu'
 
 
 #    NETWORKING

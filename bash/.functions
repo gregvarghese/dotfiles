@@ -88,6 +88,7 @@ function server() {
 	python -c $'import SimpleHTTPServer;\nmap = SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map;\nmap[""] = "text/plain";\nfor key, value in map.items():\n\tmap[key] = value + ";charset=UTF-8";\nSimpleHTTPServer.test();' "$port"
 }
 
+# Change directory to current folder in finder and run simple server.
 function cdfs()
 {
 	cdf
@@ -142,6 +143,8 @@ function swap() {
     mv "$2" "$1"
     mv $TMPFILE "$2"
 }
+
+
 
 # Use the right extraction method based on file extension
 function extract() {
@@ -518,9 +521,52 @@ function findfilesbyextension()
 
 function deletefilesbyextension()
 {	
-	confirm "Would you really like to do a push?" && find $1 -name *.$2 -delete;
+	confirm "Would you really like to delete files ended with $1?" && find $1 -name *.$2 -delete;
 }
 
+# Appends string to end of file names.
+function appendstringtofilename(){
+  for i in *; do name="${i%.*}"; mv "$i" "${name}$1${i#$name}"; done
+}
+
+# Previews string appended to end of file names.
+function previewappendstringtofilename(){
+  for i in *; do name="${i%.*}"; echo "$i" "${name}$1${i#$name}"; done
+}
+
+# Prepends string to beginning of file names.
+function prependstringtofilename(){
+  for i in *; do name="${i%.*}"; mv "$i" "$1${name}${i#$name}"; done
+}
+
+# Previews string prepended to beginning of file names.
+function previewprependstringtofilename(){
+  for i in *; do name="${i%.*}"; echo "$i" "$1${name}${i#$name}"; done
+}
+
+# Renames a string in the file name.
+# Expects 2 inputs, string to search for and string to replace with.
+function renamestringinfilename(){
+  find . -type f -name "*$1*" -exec sh -c 'mv "$0" "${0/$1/$2}"' '{}' \;
+}
+
+# Shows the output of renames a string in the file name before replacing. 
+# Used to verify changes before making them.
+# Expects 2 inputs, string to search for and string to replace with.
+function previewrenamestringinfilename(){
+  find . -type f -name "*$1*" -exec sh -c 'echo "${0/$1/$2}"' '{}' \;
+}
+
+# Replaces all spaces in file name with hyphens.
+function replacespacewithhyphen(){
+  for i in *; do mv "$i" "`echo $i | sed -e 's, ,-,g'`"; done
+}
+
+#lowercase file names recursively
+function lowercasefilenames()
+{
+  find . -depth -name '* *' | while IFS= read -r f ; do mv -v "$f" "$(dirname "$f")/$(basename "$f"|tr '[A-Z]' '[a-z]')" ; done
+}
 
 # Create symlink to a path in Apache. 
 # Usage linkapache "{Source Path}" "{Folder Name}"
