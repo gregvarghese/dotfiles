@@ -10,6 +10,29 @@ function trimspace() {
 	echo "${@//[[:blank:]]/}"
 }
 
+
+help(){
+    cat<<__EOF__
+    usage: m disk [ ls | list | info | fs | filesystems | ejectall | verify | repair | help ]
+    Examples:
+      m disk ls                                 # list disks
+      m disk list                               # list disks
+      m disk list /dev/disk0                    # list a specific disk
+      m disk fs                                 # list available filesystems for formatting
+      m disk filesystems                        # list available filesystems for formatting
+      m disk info /dev/disk0                    # display information
+      m disk ejectall                           # eject all mountable volumes
+      m disk verify volume  /Volume/MyVol       # verify volume
+      m disk verify disk /dev/disk0             # verify disk
+      m disk repair volume /Volume/MyVol        # repair volume
+      m disk repair disk /dev/disk0             # repair disk
+      m disk format MS-DOS MYNAME  /dev/disk2             # format the entire disk with a windows format (MS-DOS)
+      m disk format volume MS-DOS MYNAME /Volumes/myvol   # format the volume with a windows format(MS-DOS)
+      m disk reformat /Volumes/myvol                      # reformat a volume
+      m disk rename CURRENTNAME NEWNAME                   # rename a volume
+__EOF__
+}
+
 ################################################################################
 ################################## FUNCTIONS ###################################
 ################################################################################
@@ -319,6 +342,17 @@ update() {
     sh -c $brew$gisty; sudo sh -c $gem$pip
 }
 
+disablereportcrash()
+{
+	sudo launchctl unload -w /System/Library/LaunchAgents/com.apple.ReportCrash.plist
+	sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.ReportCrash.Root.plist
+}
+
+enablereportcrash()
+{
+	sudo launchctl load -w /System/Library/LaunchAgents/com.apple.ReportCrash.plist
+	sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.ReportCrash.Root.plist
+}
 
 #   -------------------------------
 #     Shell Functions
@@ -515,13 +549,13 @@ function tree(){
 
 function findfilesbyextension()
 {	
-	find $1 -name *.$2;
+	find $PWD -iname "*.$1";
 }
 
 
 function deletefilesbyextension()
 {	
-	confirm "Would you really like to delete files ended with $1?" && find $1 -name *.$2 -delete;
+	confirm "Would you really like to delete files ended with $1?" && find $PWD -iname "*.$1" -delete;
 }
 
 # Appends string to end of file names.
@@ -572,7 +606,21 @@ function lowercasefilenames()
 # Usage linkapache "{Source Path}" "{Folder Name}"
 function linkapache()
 {
-	ln -s $1 /Applications/MAMP/htdocs/{2}
+	ln -s $1 /Applications/MAMP/htdocs/$2
+}
+
+function crushpng()
+{
+	for png in `find $PWD -name "*.png"`;
+	do
+		echo "crushing $png"
+		pngcrush -rem allb -brute "$png" temp.png
+		mv -f temp.png $png
+	done;
+}
+
+function ejectall(){
+    osascript -e 'tell application "Finder" to eject (every disk whose ejectable is true)'
 }
 
 #   ---------------------------------------
@@ -606,4 +654,14 @@ confirm () {
             false
             ;;
     esac
+}
+
+#   ---------------------------------------
+#    Dock
+#   ---------------------------------------
+
+function add_blank_space(){
+    echo "New blank space added to the Dock"
+    defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-tile";}'
+    killall Dock
 }
