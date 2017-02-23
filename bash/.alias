@@ -23,6 +23,8 @@ alias mkdir='mkdir -p'
 # update scripts
 alias systemupdate='sudo softwareupdate -i -a; brew update; brew upgrade'
 alias shellupdate='cd ~/.dotfiles && git pull && cd - && ~/.dotfiles/install && reload && clear'
+# Get OS X Software Updates, and update installed Ruby gems, Homebrew, npm, and their installed packages
+alias update='sudo softwareupdate -i -a; brew update; brew upgrade; brew cleanup; npm update npm -g; npm update -g; sudo gem update'
 
 # tools
 alias browserstack="java -jar ~/bin/BrowserStackTunnel.jar 8vlzgcB58bVTdLITt514 localhost,80,0"
@@ -96,10 +98,14 @@ ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the curr
 ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
 ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
 fld () { /usr/bin/find . -name "$@" -type d 2>&1| grep -v 'Permission denied' ; }  # fld:      Find folder whose name matches string. Hides permission denied errors.
-alias append=appendstringtofilename 		
+alias append=appendstringtofilename
 alias pappend=previewappendstringtofilename
-alias prepend=prependstringtofilename 		
+alias prepend=prependstringtofilename
 alias pprepend=previewprependstringtofilename
+alias db="cd ~/Dropbox"
+alias dl="cd ~/Downloads"
+alias dt="cd ~/Desktop"
+alias pj="cd ~/Documents/Projects/"
 
 
 #   memHogsTop, memHogsPs:  Find memory hogs
@@ -127,12 +133,16 @@ alias ipInfo0='ipconfig getpacket en0'              # ipInfo0:      Get info on 
 alias ipInfo1='ipconfig getpacket en1'              # ipInfo1:      Get info on connections for en1
 alias openPorts='sudo lsof -i | grep LISTEN'        # openPorts:    All listening connections
 alias showBlocked='sudo ipfw list'                  # showBlocked:  All ipfw rules inc/ blocked IPs
+# Enhanced WHOIS lookups
+alias whois="whois -h whois-servers.net"
 
-#   finderShowHidden:   Show hidden files in Finder
-#   finderHideHidden:   Hide hidden files in Finder
-#   -------------------------------------------------------------------
-alias finderShowHidden='defaults write com.apple.finder ShowAllFiles TRUE'
-alias finderHideHidden='defaults write com.apple.finder ShowAllFiles FALSE'
+# Show/hide hidden files in Finder
+alias show="defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder"
+alias hide="defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder"
+
+# Hide/show all desktop icons (useful when presenting)
+alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
+alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
 
 #   cleanupLS:  Clean up LaunchServices to remove duplicates in the "Open With" menu
 #   -----------------------------------------------------------------------------------
@@ -150,9 +160,9 @@ alias apacheLogs="less +F /var/log/apache2/error_log"   # Apachelogs:   Shows ap
 httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grabs headers from web page
 
 # removes a bunch of crap from your finder
-alias cleanup="find . -name '*.DS_Store' -type f -ls -delete && find . -name 'Thumbs.db' -type f -ls -delete" 
+alias cleanup="find . -name '*.DS_Store' -type f -ls -delete && find . -name 'Thumbs.db' -type f -ls -delete"
 # retrieves the http status code for any URL
-alias httpstatuscode="curl -w %{http_code} -s --output /dev/null $1" 
+alias httpstatuscode="curl -w %{http_code} -s --output /dev/null $1"
 
 alias reload="source ~/.bash_profile"
 
@@ -164,12 +174,15 @@ alias ff4='/opt/firefox4/firefox'
 alias ff13='/opt/firefox13/firefox'
 alias chrome='/opt/google/chrome/chrome'
 alias opera='/opt/opera/opera'
- 
-#default ff 
+
+#default ff
 alias ff=ff13
- 
-#my default browser 
+
+#my default browser
 alias browser=chrome
+
+# URL-encode strings
+alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
 
 #Grabs the disk usage in the current directory
 alias usage='du -ch 2> /dev/null |tail -1'
@@ -180,3 +193,29 @@ alias partusage='df -hlT --exclude-type=tmpfs --exclude-type=devtmpfs'
 #Gives you what is using the most space. Both directories and files. Varies on
 #current directory
 alias most='du -hsx * | sort -rh | head -10'
+
+# Trim new lines and copy to clipboard
+alias c="tr -d '\n' | xclip -selection clipboard"
+
+# Intuitive map function
+# For example, to list all directories that contain a certain file:
+# find . -name .gitattributes | map dirname
+alias map="xargs -n1"
+
+# Merge PDF files
+# Usage: `mergepdf -o output.pdf input{1,2,3}.pdf`
+alias mergepdf='/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Resources/join.py'
+
+# Copies current terminal path to clipboard
+alias cwd='pwd | tr -d "\r\n" | xclip -selection clipboard'
+
+# Pipe my public key to my clipboard.
+alias pubkey="more ~/.ssh/id_ed25519.pub | xclip -selection clipboard | echo '=> Public key copied to pasteboard.'"
+
+# Pipe my private key to my clipboard.
+alias prikey="more ~/.ssh/id_ed25519 | xclip -selection clipboard | echo '=> Private key copied to pasteboard.'"
+
+# Stuff I never really use but cannot delete either because of http://xkcd.com/530/
+alias stfu="osascript -e 'set volume output muted true'"
+alias pumpitup="osascript -e 'set volume 7'"
+alias headphone="osascript -e 'set volume 4'"
