@@ -59,7 +59,7 @@ alias t='tmux attach || tmux new'
 alias flushdns='dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias ips="ifconfig -a | perl -nle'/(\d+\.\d+\.\d+\.\d+)/ && print $1'"
-alias iplocal="ipconfig getifaddr en1"
+alias iplocal="ifconfig | grep \"inet \" | grep -Fv 127.0.0.1 | awk '{print $2}'"
 
 # view http traffic
 alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
@@ -164,15 +164,13 @@ alias cleanup="find . -name '*.DS_Store' -type f -ls -delete && find . -name 'Th
 # retrieves the http status code for any URL
 alias httpstatuscode="curl -w %{http_code} -s --output /dev/null $1"
 
-alias reload="source ~/.bash_profile"
-
 # weather from my current location
 alias weather="curl -s 'http://rss.accuweather.com/rss/liveweather_rss.asp?metric=1&locCode=en|us|belleville-nj|07109' | sed -n '/Currently:/ s/.*: \(.*\): \([0-9]*\)\([CF]\).*/\2°\3, \1/p'"
 
 ## Use different browser for testing website ##
 alias ff4='/opt/firefox4/firefox'
 alias ff13='/opt/firefox13/firefox'
-alias chrome='/opt/google/chrome/chrome'
+alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
 alias opera='/opt/opera/opera'
 
 #default ff

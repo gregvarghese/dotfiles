@@ -48,3 +48,4 @@ PS1="\[$DIRECTORY_COLOR\]\w \[$GIT_COLOR\]\$(parse_git_branch)\[$STAGED_COLOR\]\
 
 
 
+eval $(/usr/libexec/path_helper -s)

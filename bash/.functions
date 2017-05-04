@@ -235,7 +235,7 @@ battery() {
 }
 
 # c - browse chrome history
-c() {
+ch() {
 	local cols sep
 		cols=$(( COLUMNS / 3 ))
 		sep='{::}'
@@ -333,14 +333,6 @@ z() {
   fi
 }
 
-# update brew, ruby, gisty, and pip.
-update() {
-    local brew="brew update; brew upgrade;"
-    local gisty="gisty pull_all; gisty sync_delete"
-    local gem="gem update;"
-    local pip="pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs pip install -U -q"
-    sh -c $brew$gisty; sudo sh -c $gem$pip
-}
 
 disablereportcrash()
 {
@@ -535,6 +527,8 @@ gitpullall() {
     done
   done
 }
+
+
 
 #   ---------------------------------------
 #    File System
