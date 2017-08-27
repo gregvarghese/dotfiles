@@ -48,9 +48,14 @@ alias vimr='vim -u NONE'
 alias gs="git status"
 alias gb="git branch"
 alias gap="git add -p"
-gitsquash () { "git reset $(git commit-tree HEAD^{tree} -m "$1")"; }
+# git reset $(git commit-tree HEAD^{tree} -m "commit message") from https://stackoverflow.com/questions/1657017/how-to-squash-all-git-commits-into-one
+gitsquash () { 
+	git reset $(git commit-tree HEAD^{tree} -m \"$@\"); 
+}
+nah='git reset --hard;git clean -df'
 alias rebaselastfive='!b="$(git branch --no-color | cut -c3-)" ; h="$(git rev-parse $b)" ; echo "Current branch: $b $h" ; c="$(git rev-parse $b~4)" ; echo "Recreating $b branch with initial commit $c ..." ; git checkout --orphan new-start $c ; git commit -C $c ; git rebase --onto new-start $c $b ; git branch -d new-start ; git gc'
 alias rebaselast='!b="$(git branch --no-color | cut -c3-)" ; h="$(git rev-parse $b)" ; echo "Current branch: $b $h" ; c="$(git rev-parse $b)" ; echo "Recreating $b branch with initial commit $c ..." ; git checkout --orphan new-start $c ; git commit -C $c ; git rebase --onto new-start $c $b ; git branch -d new-start ; git gc'
+alias gp="git pull"
 
 # tmux
 alias tmux='tmux -2'
@@ -107,7 +112,8 @@ alias db="cd ~/Dropbox"
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
 alias pj="cd ~/Documents/Projects/"
-
+alias ll="ls -lh"
+alias la='ls -lAh'
 
 #   memHogsTop, memHogsPs:  Find memory hogs
 #   -----------------------------------------------------
@@ -219,3 +225,8 @@ alias prikey="more ~/.ssh/id_ed25519 | xclip -selection clipboard | echo '=> Pri
 alias stfu="osascript -e 'set volume output muted true'"
 alias pumpitup="osascript -e 'set volume 7'"
 alias headphone="osascript -e 'set volume 4'"
+
+# Laravel
+alias art="php artisan"
+alias tinker='artisan tinker'
+alias cdo="composer dump-autoload -o"
