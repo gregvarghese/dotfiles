@@ -1,4 +1,3 @@
-source ~/.profile
 # bashrc
 if [ -f "$HOME/.bashrc" ] ; then
     . ~/.bashrc

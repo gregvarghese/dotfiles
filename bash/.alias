@@ -52,7 +52,7 @@ alias gap="git add -p"
 gitsquash () { 
 	git reset $(git commit-tree HEAD^{tree} -m \"$@\"); 
 }
-nah='git reset --hard;git clean -df'
+alias nah='git reset --hard;git clean -df'
 alias rebaselastfive='!b="$(git branch --no-color | cut -c3-)" ; h="$(git rev-parse $b)" ; echo "Current branch: $b $h" ; c="$(git rev-parse $b~4)" ; echo "Recreating $b branch with initial commit $c ..." ; git checkout --orphan new-start $c ; git commit -C $c ; git rebase --onto new-start $c $b ; git branch -d new-start ; git gc'
 alias rebaselast='!b="$(git branch --no-color | cut -c3-)" ; h="$(git rev-parse $b)" ; echo "Current branch: $b $h" ; c="$(git rev-parse $b)" ; echo "Recreating $b branch with initial commit $c ..." ; git checkout --orphan new-start $c ; git commit -C $c ; git rebase --onto new-start $c $b ; git branch -d new-start ; git gc'
 alias gp="git pull"
@@ -230,3 +230,14 @@ alias headphone="osascript -e 'set volume 4'"
 alias art="php artisan"
 alias tinker='artisan tinker'
 alias cdo="composer dump-autoload -o"
+alias pam="php artisan migrate"
+alias pam:r='php artisan migrate:refresh'
+alias pam:rs='php artisan migrate:refresh --seed'
+alias cdo="composer dump-autoload -o"
+alias serve="php artisan serve"
+alias cu='composer update'
+alias ci='composer install'
+alias cda='composer dump-autoload -o'
+alias vu='cd ~/Homestead && vagrant up'
+alias vs='vagrant suspend'
+alias vssh='vagrant ssh'
