@@ -12,7 +12,7 @@ brew install tmux
 brew install node
 
 
-Nothing, really. Some aliases might not work without certain things installed, but it'll be pretty obvious. My tmux settings require tmux (brew install tmux), and [bin files from James Tomasino](https://github.com/jamestomasino/bin) to be installed somewhere in the path. You probably want ruby 1.9.3+, python 2.7+, and php 5.4+ installed. Vim 7.4 too.
+Nothing, really. Some aliases might not work without certain things installed, but it'll be pretty obvious. My tmux settings require tmux (brew install tmux), and [bin files from James Tomasino] (https://github.com/jamestomasino/bin) to be installed somewhere in the path. You probably want ruby 1.9.3+, python 2.7+, and php 5.4+ installed. Vim 7.4 too.
 
 ### Install ###
 
