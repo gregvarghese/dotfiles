@@ -5,14 +5,15 @@ This repo serves as a master collection of all my dotfiles. Each grouping has it
 ### Dependencies ###
 
 Homebrew Install & dependencies:
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew install wget
-brew install python
-brew install tmux
-brew install node
+    
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    brew install wget
+    brew install python
+    brew install tmux
+    brew install node
 
 
-Nothing, really. Some aliases might not work without certain things installed, but it'll be pretty obvious. My tmux settings require tmux (brew install tmux), and [bin files from James Tomasino](https://github.com/jamestomasino/bin) to be installed somewhere in the path. You probably want ruby 1.9.3+, python 2.7+, and php 5.4+ installed. Vim 7.4 too.
+Nothing, really. Some aliases might not work without certain things installed, but it'll be pretty obvious. My tmux settings require tmux (brew install tmux), and [bin files from James Tomasino] (https://github.com/jamestomasino/bin) to be installed somewhere in the path. You probably want ruby 1.9.3+, python 2.7+, and php 5.4+ installed. Vim 7.4 too.
 
 ### Install ###
 
@@ -28,7 +29,7 @@ From anywhere:
 
 ### Credits ####
 
-Most stuff is from [https://github.com/jamestomasino](James Tomasino), but a lot of the aliases and functions are ripped off from around the web. If you notice your idea in my repo somewhere and want credit, send me a note. Once I'm done rolling my eyes, I'll post a link or something.
+Most stuff is from [https://github.com/jamestomasino] (James Tomasino), but a lot of the aliases and functions are ripped off from around the web. If you notice your idea in my repo somewhere and want credit, send me a note. Once I'm done rolling my eyes, I'll post a link or something.
 
 # Function List
 
@@ -154,7 +155,8 @@ Most stuff is from [https://github.com/jamestomasino](James Tomasino), but a lot
     httpHeaders - Grabs headers from web page
     urlencode - URL-encode strings
 
- Assumes you have the browsers installed:
+ Assumes you have the required browsers installed (or you get a file not found error):
+    
     ff - Opens a new instance of Firefox for development testing
     chrome - Opens a new instance of Chrome for development testing
     opera - Opens a new instance of opera for development testing
