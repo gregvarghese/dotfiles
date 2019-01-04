@@ -659,3 +659,22 @@ function add_blank_space(){
     defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-tile";}'
     killall Dock
 }
+
+function novatag(){
+  git init
+  git add .
+  git commit -am "Version $1" 
+  git tag v$1
+  git remote add origin git@bitbucket.org:yourusername/nova.git
+  git push origin master --tags
+}
+
+function newlaravel(){
+  composer require doctrine/dbal sentry/sentry-laravel laravel/horizon predis/predis spatie/laravel-cookie-consent
+  composer require barryvdh/laravel-debugbar laravel/dusk beyondcode/laravel-query-detector barryvdh/laravel-ide-helper ajthinking/tinx lubusin/laravel-decomposer laravel/telescope --dev
+  php artisan clear-compiled
+  php artisan ide-helper:generate
+  printf "Remember to add:\r\n\r\npublic function register()\r\n{\r\n    if ($this->app->environment() !== 'production') {\r\n        $this->app->register(\\\\Barryvdh\\\\LaravelIdeHelper\\\\IdeHelperServiceProvider::class);\r\n    }\r\n    \\/\\/ ...\r\n} \r\nto app\\/Providers\\/AppServiceProvider.php\r\n\r\nand\r\n\r\n\"scripts\":{\r\n    \"post-update-cmd\": [\r\n        \"Illuminate\\\\\\\\Foundation\\\\\\\\ComposerScripts::postUpdate\",\r\n        \"php artisan ide-helper:generate\",\r\n        \"php artisan ide-helper:meta\"\r\n    ]\r\n},\r\n\r\nto composer.json\r\n "
+  printf "See https://github.com/barryvdh/laravel-ide-helper for more info"
+  printf "See https://github.com/lubusIN/laravel-decomposer for setting up route"
+}
