@@ -57,6 +57,10 @@ alias rebaselastfive='!b="$(git branch --no-color | cut -c3-)" ; h="$(git rev-pa
 alias rebaselast='!b="$(git branch --no-color | cut -c3-)" ; h="$(git rev-parse $b)" ; echo "Current branch: $b $h" ; c="$(git rev-parse $b)" ; echo "Recreating $b branch with initial commit $c ..." ; git checkout --orphan new-start $c ; git commit -C $c ; git rebase --onto new-start $c $b ; git branch -d new-start ; git gc'
 alias gp="git pull"
 
+# This requires the diff2html cli - https://diff2html.xyz/ - install with `npm install -g diff2html-cli`
+alias diff='diff2html -s side'
+
+
 # tmux
 alias tmux='tmux -2'
 alias t='tmux attach || tmux new'
@@ -215,9 +219,6 @@ alias mergepdf='/System/Library/Automator/Combine\ PDF\ Pages.action/Contents/Re
 # Copies current terminal path to clipboard
 alias cwd='pwd | tr -d "\r\n" | xclip -selection clipboard'
 
-# Pipe my public key to my clipboard.
-alias pubkey="more ~/.ssh/id_ed25519.pub | xclip -selection clipboard | echo '=> Public key copied to pasteboard.'"
-
 # Pipe my private key to my clipboard.
 alias prikey="more ~/.ssh/id_ed25519 | xclip -selection clipboard | echo '=> Private key copied to pasteboard.'"
 
@@ -246,3 +247,6 @@ alias npmd='npm run dev'
 alias npmp='npm run production'
 alias npmw='npm run watch'
 alias tinx='php artisan tinx'
+
+# Web based shortcuts
+alias getmp3="youtube-dl -x --audio-format mp3 "

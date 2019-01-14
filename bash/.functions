@@ -77,12 +77,10 @@ function todos {
 	find "${LOCAL_DIR}" -type f -exec grep -H -n '(TODO|FIX(ME)?):' {} \; 2> /dev/null 
 }
 
-# jump to root folder of git repo
-function cdroot {
-	LOCAL_DIR=$(git rev-parse --show-toplevel)
-	LOCAL_DIR=${LOCAL_DIR:-.}
-	cd "$LOCAL_DIR"
-}
+
+#   ---------------------------------------
+#    Development Stuff
+#   ---------------------------------------
 
 # json formatting / highlighting
 function json() {
@@ -166,8 +164,6 @@ function swap() {
     mv "$2" "$1"
     mv $TMPFILE "$2"
 }
-
-
 
 # Use the right extraction method based on file extension
 function extract() {
@@ -351,18 +347,6 @@ enablereportcrash()
 #   -------------------------------
 zipf () { zip -r "$1".zip "$1" ; }          # zipf:         To create a ZIP archive of a folder
 
-
-# Change directory to folder opened in finder
-
-cdf() {
-    target=`osascript -e 'tell application "Finder" to if (count of Finder windows) > 0 then get POSIX path of (target of front Finder window as text)'`
-    if [ "$target" != "" ]; then
-        cd "$target"; pwd
-    else
-        echo 'No Finder window found' >&2
-    fi
-}
-
 # Colorize cat output
 
 	cat() {
@@ -495,6 +479,8 @@ function gittreestatus() {
 	fi
 }
 
+# Loops through all branches and does a pull
+
 gitpullall() {
   REMOTES="$@";
   if [ -z "$REMOTES" ]; then
@@ -528,7 +514,37 @@ gitpullall() {
   done
 }
 
+# initialize git in a directory with existing project
+# requires remote repo path
 
+function gitinit()
+{
+  git init
+  git add .
+  git commit -m "First commit"
+  git remote add origin $1
+  git push -u origin master
+}
+
+# for when someone doesn't quite need to know how much I procrastinated in that particular task
+# Expects date to set or not to unset
+
+function gitlie() {
+    if [[ "$1" == "not" ]]
+    then
+      unset GIT_AUTHOR_DATE
+      unset GIT_COMMITTER_DATE
+      return 0
+    fi
+    export GIT_AUTHOR_DATE="$1"
+    export export GIT_COMMITTER_DATE="$1"
+  }
+
+# useful if you just pushed some code and realised you missed something
+
+function gitoops() { 
+  git add -A "$@" && git commit --amend --no-edit && gpcfl 
+}
 
 #   ---------------------------------------
 #    File System
@@ -545,7 +561,6 @@ function findfilesbyextension()
 {	
 	find $PWD -iname "*.$1";
 }
-
 
 function deletefilesbyextension()
 {	
@@ -617,9 +632,24 @@ function ejectall(){
     osascript -e 'tell application "Finder" to eject (every disk whose ejectable is true)'
 }
 
-#   ---------------------------------------
-#    File System
-#   ---------------------------------------
+# jump to root folder of git repo
+function cdroot() {
+  LOCAL_DIR=$(git rev-parse --show-toplevel)
+  LOCAL_DIR=${LOCAL_DIR:-.}
+  cd "$LOCAL_DIR"
+}
+
+# Change directory to folder opened in finder
+
+cdf() {
+    target=`osascript -e 'tell application "Finder" to if (count of Finder windows) > 0 then get POSIX path of (target of front Finder window as text)'`
+    if [ "$target" != "" ]; then
+        cd "$target"; pwd
+    else
+        echo 'No Finder window found' >&2
+    fi
+}
+
 
 # Lists members of Admin group. 
 # Usage: members admin 
@@ -660,16 +690,18 @@ function add_blank_space(){
     killall Dock
 }
 
-function novatag(){
-  git init
-  git add .
-  git commit -am "Version $1" 
-  git tag v$1
-  git remote add origin git@bitbucket.org:yourusername/nova.git
-  git push origin master --tags
-}
+#   ---------------------------------------
+#    Laravel
+#   ---------------------------------------
+
+# Create a new Laravel Spark project and add the packages I use most.
+# Note: Assumes spark is on the path
+# Installs Dbal, Sentry for Laravel, Laravel Horizon, Redis Driver for Queues, Laravel Cookie Consent
+# Development: debugbar, dusk, query detector, ide helper, tinx, decomposer, and telescope
 
 function newlaravel(){
+  spark new $1 --team-billing
+  cd $1
   composer require doctrine/dbal sentry/sentry-laravel laravel/horizon predis/predis spatie/laravel-cookie-consent
   composer require barryvdh/laravel-debugbar laravel/dusk beyondcode/laravel-query-detector barryvdh/laravel-ide-helper ajthinking/tinx lubusin/laravel-decomposer laravel/telescope --dev
   php artisan clear-compiled
@@ -677,4 +709,15 @@ function newlaravel(){
   printf "Remember to add:\r\n\r\npublic function register()\r\n{\r\n    if ($this->app->environment() !== 'production') {\r\n        $this->app->register(\\\\Barryvdh\\\\LaravelIdeHelper\\\\IdeHelperServiceProvider::class);\r\n    }\r\n    \\/\\/ ...\r\n} \r\nto app\\/Providers\\/AppServiceProvider.php\r\n\r\nand\r\n\r\n\"scripts\":{\r\n    \"post-update-cmd\": [\r\n        \"Illuminate\\\\\\\\Foundation\\\\\\\\ComposerScripts::postUpdate\",\r\n        \"php artisan ide-helper:generate\",\r\n        \"php artisan ide-helper:meta\"\r\n    ]\r\n},\r\n\r\nto composer.json\r\n "
   printf "See https://github.com/barryvdh/laravel-ide-helper for more info"
   printf "See https://github.com/lubusIN/laravel-decomposer for setting up route"
+}
+
+#   ---------------------------------------
+#    Internet Stuff
+#   ---------------------------------------
+
+
+# Have I been pwned?
+# usage: `hibp email@example.com`
+hibp() {
+    curl -fsS "https://haveibeenpwned.com/api/v2/breachedaccount/$1" | jq -r 'sort_by(.BreachDate)[] | [.Title,.Domain,.BreachDate,.PwnCount] | @tsv' | column -t -s$'\t'
 }

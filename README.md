@@ -7,13 +7,14 @@ This repo serves as a master collection of all my dotfiles. Each grouping has it
 Homebrew Install & dependencies:
     
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    brew install wget
-    brew install python
-    brew install tmux
-    brew install node
+    brew install wget python tmux node jq fzf
+    brew install ffmpeg --with-libvpx
+    npm install -g diff2html-cli
+    pip install youtube_dl
 
+Some aliases might not work without certain things installed, but it'll be pretty obvious. My tmux settings require tmux (brew install tmux), and [bin files from James Tomasino] (https://github.com/jamestomasino/bin) to be installed somewhere in the path. 
 
-Nothing, really. Some aliases might not work without certain things installed, but it'll be pretty obvious. My tmux settings require tmux (brew install tmux), and [bin files from James Tomasino] (https://github.com/jamestomasino/bin) to be installed somewhere in the path. You probably want ruby 1.9.3+, python 2.7+, and php 5.4+ installed. Vim 7.4 too.
+You probably want ruby 1.9.3+, python 2.7+, and php 7+, & Vim 7.4 installed.
 
 ### Install ###
 
@@ -29,7 +30,7 @@ From anywhere:
 
 ### Credits ####
 
-Most stuff is from [https://github.com/jamestomasino] (James Tomasino), but a lot of the aliases and functions are ripped off from around the web. If you notice your idea in my repo somewhere and want credit, send me a note. Once I'm done rolling my eyes, I'll post a link or something.
+Most stuff is from [https://github.com/jamestomasino] (James Tomasino), but a lot of the aliases and functions are ripped off from around the web. 
 
 # Function List
 
@@ -72,6 +73,7 @@ Most stuff is from [https://github.com/jamestomasino] (James Tomasino), but a lo
     cdfs - changes to current folder in finder and spins up simple server
     linkapache {source path} {name} - Assumes you have MAMP installed - creates a symlink for the source path with the name in the htdocs folder in MAMP's apache folder.
     imgsz {image filepath} - Returns height and width of image file.
+    diff - generates side by side comparison of changes before committing
 
 ### Git ###
 
@@ -83,6 +85,7 @@ Most stuff is from [https://github.com/jamestomasino] (James Tomasino), but a lo
     gitmodified - Return number of modified files in folder
     gituntracked - Return number of untracked files in folder
     gitpullall - Pulls all remotes
+    gitoops - useful if you just pushed some code and realised you missed something
 
 # Aliases
 
@@ -160,3 +163,12 @@ Most stuff is from [https://github.com/jamestomasino] (James Tomasino), but a lo
     ff - Opens a new instance of Firefox for development testing
     chrome - Opens a new instance of Chrome for development testing
     opera - Opens a new instance of opera for development testing
+
+### Internet Services ###
+
+Shortcuts to various internet services
+
+    getmp3 - Pass in the youtube URL and youtube-dl will download the mp3
+    hibp - Pass e-mail see if email is in the Have I Been Pwned database
+
+ 
