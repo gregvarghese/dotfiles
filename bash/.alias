@@ -15,10 +15,13 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
+alias please='sudo $(history -p !!)'
+alias cls="clear; ls"
 
 # aliases to default commands with certain switches
 alias grep='grep --color=auto'
 alias mkdir='mkdir -p'
+alias l='ls -GFla'
 
 # update scripts
 alias systemupdate='sudo softwareupdate -i -a; brew update; brew upgrade'
@@ -49,13 +52,11 @@ alias gs="git status"
 alias gb="git branch"
 alias gap="git add -p"
 # git reset $(git commit-tree HEAD^{tree} -m "commit message") from https://stackoverflow.com/questions/1657017/how-to-squash-all-git-commits-into-one
-gitsquash () { 
-	git reset $(git commit-tree HEAD^{tree} -m \"$@\"); 
-}
 alias nah='git reset --hard;git clean -df'
 alias rebaselastfive='!b="$(git branch --no-color | cut -c3-)" ; h="$(git rev-parse $b)" ; echo "Current branch: $b $h" ; c="$(git rev-parse $b~4)" ; echo "Recreating $b branch with initial commit $c ..." ; git checkout --orphan new-start $c ; git commit -C $c ; git rebase --onto new-start $c $b ; git branch -d new-start ; git gc'
 alias rebaselast='!b="$(git branch --no-color | cut -c3-)" ; h="$(git rev-parse $b)" ; echo "Current branch: $b $h" ; c="$(git rev-parse $b)" ; echo "Recreating $b branch with initial commit $c ..." ; git checkout --orphan new-start $c ; git commit -C $c ; git rebase --onto new-start $c $b ; git branch -d new-start ; git gc'
 alias gp="git pull"
+alias gpcfl="git push origin \$(current_branch) --force-with-lease"
 
 # This requires the diff2html cli - https://diff2html.xyz/ - install with `npm install -g diff2html-cli`
 alias diff='diff2html -s side'

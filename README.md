@@ -55,6 +55,13 @@ Most stuff is from [https://github.com/jamestomasino] (James Tomasino), but a lo
     .... - Up three directories
     ..... - Up four directories
     ...... - Up five directories
+    up {#} - Pass # and it'll let you go up that number of directories (i.e. up 6)
+    please - Run previous command as sudo
+    pathadd - Add to path
+    pathrm - Remove from path
+    cls - Clears the screen followed by ls
+    mkcd {Folder Name} - Make directory and cd into it
+    l = ls -GFla
 
 ### Admin ###
 
@@ -86,6 +93,7 @@ Most stuff is from [https://github.com/jamestomasino] (James Tomasino), but a lo
     gituntracked - Return number of untracked files in folder
     gitpullall - Pulls all remotes
     gitoops - useful if you just pushed some code and realised you missed something
+    gitsquash - squashes history
 
 # Aliases
 

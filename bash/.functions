@@ -77,6 +77,42 @@ function todos {
 	find "${LOCAL_DIR}" -type f -exec grep -H -n '(TODO|FIX(ME)?):' {} \; 2> /dev/null 
 }
 
+function pathadd() {
+        newelement=${1%/}
+        if [ -d "$1" ] && ! echo "$PATH" | grep -E -q "(^|:)$newelement($|:)" ; then
+            if [ "$2" = "after" ] ; then
+                PATH="$PATH:$newelement"
+            else
+                PATH="$newelement:$PATH"
+            fi
+        fi
+    }
+
+function pathrm() {
+    PATH="$(echo $PATH | sed -e "s;\(^\|:\)${1%/}\(:\|\$\);\1\2;g" -e 's;^:\|:$;;g' -e 's;::;:;g')"
+}
+
+function up(){
+    local d=""
+    limit=$1
+    for ((i=1 ; i <= limit ; i++))
+      do
+        d=$d/..
+      done
+    d=$(echo $d | sed 's/^\///')
+    if [ -z "$d" ]; then
+      d=..
+    fi
+    cd $d
+  }
+
+# Make directory and cd into it
+
+function mkcd() {
+      mkdir -p "$*"
+      cd "$*"
+    }
+
 
 #   ---------------------------------------
 #    Development Stuff
@@ -544,6 +580,17 @@ function gitlie() {
 
 function gitoops() { 
   git add -A "$@" && git commit --amend --no-edit && gpcfl 
+}
+
+# squash!
+function gitsquash() {
+  if [ -n "$1" ]; then
+    git reset --soft HEAD~$1 && git commit --edit -m"$(git log --format=%B --reverse HEAD..HEAD@{1})"
+  fi
+}
+
+gitsquash () { 
+  git reset $(git commit-tree HEAD^{tree} -m \"$@\"); 
 }
 
 #   ---------------------------------------
