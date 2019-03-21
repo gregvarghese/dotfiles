@@ -445,6 +445,16 @@ function to_install() {
 }    
 
 
+# Portforwarding shortcut - pfwd hostname {6000..6009}
+function pfwd {
+  for i in ${@:2}
+  do
+    echo Forwarding port $i
+    ssh -N -L $i:localhost:$i $1 &
+  done  
+}
+
+
 #   ---------------------------------------
 #    GIT
 #   ---------------------------------------
@@ -650,6 +660,10 @@ function previewrenamestringinfilename(){
 # Replaces all spaces in file name with hyphens.
 function replacespacewithhyphen(){
   for i in *; do mv "$i" "`echo $i | sed -e 's, ,-,g'`"; done
+}
+
+function searchstring(){
+  grep -rnwi "$i" "$PWD"
 }
 
 #lowercase file names recursively
