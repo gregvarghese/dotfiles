@@ -95,6 +95,12 @@ Most stuff is from [https://github.com/jamestomasino] (James Tomasino), but a lo
     gitoops - useful if you just pushed some code and realised you missed something
     gitsquash - squashes history
 
+### Internet ###
+
+    latencyavg {# of times to run} {URL} - Runs the # of times specified and returns the average latency of given URL 
+    
+
+
 # Aliases
 
 ### General ###

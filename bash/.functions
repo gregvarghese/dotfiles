@@ -782,3 +782,22 @@ function newlaravel(){
 hibp() {
     curl -fsS "https://haveibeenpwned.com/api/v2/breachedaccount/$1" | jq -r 'sort_by(.BreachDate)[] | [.Title,.Domain,.BreachDate,.PwnCount] | @tsv' | column -t -s$'\t'
 }
+
+curlb(){
+  curl -s -o /dev/null -w '%{time_starttransfer}\n' "$@"
+}
+
+function latencyavg()
+{
+  time=0.00
+  for (( c=1; c<=$1; c++ ))
+  do
+     num1=$(curlb $2 -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,ja;q=0.6' -H 'Upgrade-Insecure-Requests: 1' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.86 Safari/537.36' -H 'Connection: keep-alive' --compressed)
+     echo "$c - $num1"
+     time=$(echo "$time + $num1" | bc -l)
+  done
+  echo "Total Time $time"
+  echo $(echo $time / $1 | bc -l)
+}
+
+
