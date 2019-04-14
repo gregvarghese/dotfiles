@@ -19,6 +19,12 @@ if [ -f "$HOME/.alias" ] ; then
     . "$HOME/.alias"
 fi
 
+
+# alias
+if [ -f "$HOME/.laravel" ] ; then
+    . "$HOME/.laravel"
+fi
+
 # platform specific aliases
 if [ -f "$HOME/.platform" ] ; then
     . "$HOME/.platform"
