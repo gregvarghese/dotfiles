@@ -185,7 +185,7 @@ alias ff13='/opt/firefox13/firefox'
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
 alias canary='/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary'
 alias opera='/opt/opera/opera'
-
+	
 #default ff
 alias ff=ff13
 
@@ -230,3 +230,52 @@ alias headphone="osascript -e 'set volume 4'"
 
 # Web based shortcuts
 alias getmp3="youtube-dl -x --audio-format mp3 "
+
+
+################################################################################
+################################### LARAVEL ALIASES ############################
+################################################################################
+
+# Laravel Artisan
+alias art="php artisan"
+alias pam="php artisan migrate"
+alias pam:r='php artisan migrate:refresh'
+alias pam:rs='php artisan migrate:refresh --seed'
+alias serve="php artisan serve"
+alias du="php artisan dusk"
+
+# Artisan Unit Tests
+alias mt="php artisan make:test"
+alias mtu="php artisan make:test --unit "
+
+## tinker/tinkx
+alias tinker='artisan tinker'
+alias tinx='php artisan tinx'
+
+# Composer
+alias cdo="composer dump-autoload -o"
+alias cu='composer update'
+alias ci='composer install'
+alias cr='composer require'
+alias cda='composer dump-autoload -o'
+
+
+# NPM
+alias npmd='npm run dev'
+alias npmp='npm run production'
+alias npmw='npm run watch'
+
+
+# Logs
+alias viewlog='tail -f -n 450 storage/logs/laravel*.log \
+                | grep -i -E \
+                    "^\[\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:\d{2}\]|Next [\w\W]+?\:" \
+                    --color'
+alias rmlogs="rm storage/logs/laravel-*.log"
+
+
+
+# Vagrant
+alias vu='cd ~/Homestead && vagrant up'
+alias vs='vagrant suspend'
+alias vssh='vagrant ssh'
