@@ -772,6 +772,12 @@ function newlaravel(){
   printf "See https://github.com/lubusIN/laravel-decomposer for setting up route"
 }
 
+
+# Artisan: -a, --all Generate a migration, factory, and resource controller for the model
+function mcr(){
+  php artisan make:model $1 -a
+}
+
 #   ---------------------------------------
 #    Internet Stuff
 #   ---------------------------------------
