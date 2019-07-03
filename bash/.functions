@@ -761,15 +761,18 @@ function add_blank_space(){
 # Development: debugbar, dusk, query detector, ide helper, tinx, decomposer, and telescope
 
 function newlaravel(){
-  spark new $1 --team-billing
+  spark new $1 -n --team-billing
   cd $1
-  composer require doctrine/dbal sentry/sentry-laravel laravel/horizon predis/predis spatie/laravel-cookie-consent
+  composer require doctrine/dbal sentry/sentry-laravel predis/predis spatie/laravel-cookie-consent
   composer require barryvdh/laravel-debugbar laravel/dusk beyondcode/laravel-query-detector barryvdh/laravel-ide-helper ajthinking/tinx lubusin/laravel-decomposer laravel/telescope --dev
   php artisan clear-compiled
   php artisan ide-helper:generate
   printf "Remember to add:\r\n\r\npublic function register()\r\n{\r\n    if ($this->app->environment() !== 'production') {\r\n        $this->app->register(\\\\Barryvdh\\\\LaravelIdeHelper\\\\IdeHelperServiceProvider::class);\r\n    }\r\n    \\/\\/ ...\r\n} \r\nto app\\/Providers\\/AppServiceProvider.php\r\n\r\nand\r\n\r\n\"scripts\":{\r\n    \"post-update-cmd\": [\r\n        \"Illuminate\\\\\\\\Foundation\\\\\\\\ComposerScripts::postUpdate\",\r\n        \"php artisan ide-helper:generate\",\r\n        \"php artisan ide-helper:meta\"\r\n    ]\r\n},\r\n\r\nto composer.json\r\n "
   printf "See https://github.com/barryvdh/laravel-ide-helper for more info"
   printf "See https://github.com/lubusIN/laravel-decomposer for setting up route"
+  mkdir src
+  shopt -s dotglob
+  mv $PWD/* $PWD/src
 }
 
 

@@ -22,4 +22,4 @@ if [ -f "$HOME/.bash_local" ] ; then
 fi
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export PATH="$PATH:$HOME/.composer/vendor/bin:/Users/gvarghese/Downloads/spark-installer"
+export PATH="$PATH:$HOME/.composer/vendor/bin:/Users/$USER/Downloads/spark-installer"
