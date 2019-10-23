@@ -607,7 +607,7 @@ function gilaravel() {
 	curl -sL "https://www.gitignore.io/api/vue,vim,vuejs,macos,windows,laravel,jetbrains,phpstorm+all,jetbrains+all,microsoftoffice;" > .gitignore
 }
 
-git()
+git1()
 {
   if [ $# -gt 0 ] && [ "$1" == "push" ] ; then
      shift
