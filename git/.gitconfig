@@ -2,7 +2,7 @@
 	name = Gregory Varghese
 	email = gregory@gr8mediagroup.com
 [mergetool]
-	keepBackup = true
+	keepBackup = false
 [core]
 	excludesfile = /Users/gvarghese/.gitignore_global
 [difftool "sourcetree"]
@@ -14,12 +14,12 @@
 [diff]
 	tool = diffmerge
 [difftool "diffmerge"]
-	cmd = /usr/local/bin/diffmerge \"$LOCAL\" \"$REMOTE\"
+	cmd = diffmerge \"$LOCAL\" \"$REMOTE\"
 [merge]
 	tool = diffmerge
 [mergetool "diffmerge"]
 	trustExitCode = true
-	cmd = /usr/local/bin/diffmerge --merge --result=\"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
+	cmd = "diffmerge --merge --result=\"$MERGED\" \"$LOCAL\" \"$(if test -f \"$BASE\"; then echo \"$BASE\"; else echo \"$LOCAL\"; fi)\" \"$REMOTE\""
 [push]
 	default = matching
 [advice]

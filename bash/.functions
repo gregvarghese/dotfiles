@@ -775,21 +775,94 @@ function add_blank_space(){
 # Create a new Laravel Spark project and add the packages I use most.
 # Note: Assumes spark is on the path
 # Installs Dbal, Sentry for Laravel, Laravel Horizon, Redis Driver for Queues, Laravel Cookie Consent
-# Development: debugbar, dusk, query detector, ide helper, tinx, decomposer, and telescope
+# Development: debugbar, dusk, query detector, ide helper, and telescope
+# Added support for Laravel Nova as optional paraemter 2:
+# Usage: newspark projectname nova or newspark projectname 
 
-function newlaravel(){
-  spark new $1 -n --team-billing
+function newspark(){
+  spark new $1 --team-billing
   cd $1
   composer require doctrine/dbal sentry/sentry-laravel predis/predis spatie/laravel-cookie-consent
-  composer require barryvdh/laravel-debugbar laravel/dusk beyondcode/laravel-query-detector barryvdh/laravel-ide-helper ajthinking/tinx lubusin/laravel-decomposer laravel/telescope --dev
+  composer require barryvdh/laravel-debugbar laravel/dusk beyondcode/laravel-query-detector barryvdh/laravel-ide-helper laravel/telescope orangehill/iseed --dev
   php artisan clear-compiled
   php artisan ide-helper:generate
-  printf "See https://github.com/barryvdh/laravel-ide-helper for more info"
-  printf "See https://github.com/lubusIN/laravel-decomposer for setting up route"
+  php artisan vendor:publish --provider="BeyondCode\QueryDetector\QueryDetectorServiceProvider"
+  php artisan vendor:publish --provider="Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider" --tag=config
+  #appends the ide-helper script to composer.json 
+  cat composer.json | jq '.scripts += {"post-update-cmd": [ "Illuminate\\Foundation\\ComposerScripts::postUpdate", "@php artisan ide-helper:generate", "@php artisan ide-helper:meta"]}' > composer.json
+
+  if [ $2 = "nova"  ];
+  then 
+
+    cat composer.json | jq '.repositories += [{"type": "composer", "url": "https://nova.laravel.com"}]' > composer.json
+    sed -i "" 's/=stack/=daily/g' .env
+    sed -i "" 's/=Laravel/=$1/g' .env
+    sed -i "" 's/http://localhost/https://$1.local/g' .env
+    composer require laravel/nova
+    php artisan nova:install
+    php artisan migrate
+    cat composer.json | .scripts += {"post-update-cmd": [         "@php artisan nova:publish"     ]} > composer.json
+
+  fi; 
+
   mkdir src
   shopt -s dotglob
   mv $PWD/* $PWD/src
-  gilaravel
+  cd ..
+  curl -sL "https://www.gitignore.io/api/vue,vim,vuejs,macos,windows,laravel,jetbrains,phpstorm+all,jetbrains+all,microsoftoffice;" > .gitignore
+}
+
+# Create a new Laravel Spark project and add the packages I use most.
+# Note: Assumes spark is on the path
+# Installs Dbal, Sentry for Laravel, Laravel Horizon, Redis Driver for Queues, Laravel Cookie Consent
+# Development: debugbar, dusk, query detector, ide helper, and telescope
+# Added support for Laravel Nova as optional paraemter 2:
+# Usage: newspark projectname nova or newspark projectname 
+
+function newlaravel(){
+  laravel new $1
+  cd $1
+  composer require doctrine/dbal sentry/sentry-laravel predis/predis spatie/laravel-cookie-consent
+  composer require barryvdh/laravel-debugbar laravel/dusk beyondcode/laravel-query-detector barryvdh/laravel-ide-helper laravel/telescope orangehill/iseed --dev
+  php artisan clear-compiled
+  php artisan ide-helper:generate
+  php artisan vendor:publish --provider="BeyondCode\QueryDetector\QueryDetectorServiceProvider"
+  php artisan vendor:publish --provider="Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider" --tag=config
+  #appends the ide-helper script to composer.json 
+  cat composer.json | jq '.scripts += {"post-update-cmd": [ "Illuminate\\Foundation\\ComposerScripts::postUpdate", "@php artisan ide-helper:generate", "@php artisan ide-helper:meta"]}' > composer.json
+
+  if [ $2 = "nova"  ];
+  then 
+
+    cat composer.json | jq '.repositories += [{"type": "composer", "url": "https://nova.laravel.com"}]' > composer.json
+    sed -i "" 's/=stack/=daily/g' .env
+    sed -i "" 's/=Laravel/=$1/g' .env
+    sed -i "" 's/http://localhost/https://$1.local/g' .env
+    composer require laravel/nova
+    php artisan nova:install
+    php artisan migrate
+    cat composer.json | .scripts += {"post-update-cmd": [         "@php artisan nova:publish"     ]} > composer.json
+
+  fi; 
+
+  mkdir src
+  shopt -s dotglob
+  mv $PWD/* $PWD/src
+  cd ..
+  curl -sL "https://www.gitignore.io/api/vue,vim,vuejs,macos,windows,laravel,jetbrains,phpstorm+all,jetbrains+all,microsoftoffice;" > .gitignore
+}
+
+function testspark()
+{
+    project=${1:-name};
+    nova=${2:-nova};
+    echo $nova;
+    if [ $# -eq 0 ]
+    then
+      echo "No arguments supplied."
+    else
+      echo "$# arguments supplied."
+    fi
 }
 
 
