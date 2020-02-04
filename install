@@ -55,3 +55,7 @@ if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
 		tmux source-file "$HOME/.tmux.conf"
 	fi
 fi
+
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install wget curl
+curl -s 'https://api.macapps.link/en/firefox-chrome-evernote-dropbox-alfred-hyperswitch-fantastical-sublime-pycharm-dash-vscode-docker-insomnia-phpstorm-bbedit-iterm-unarchiver-filezilla-fluid-teamviewer-caffeine-flux-cloudapp-spectacle-vlc-adium-slack' | sh

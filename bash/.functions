@@ -791,29 +791,41 @@ function newspark(){
   #appends the ide-helper script to composer.json 
   cat composer.json | jq '.scripts += {"post-update-cmd": [ "Illuminate\\Foundation\\ComposerScripts::postUpdate", "@php artisan ide-helper:generate", "@php artisan ide-helper:meta"]}' > composer.json
 
+  sed -i "" 's/=stack/=daily/g' .env
+  sed -i "" 's/Laravel/$1/g' .env
+  sed -i "" 's/http/https/g' .env
+  sed -i "" 's/localhost/$1.local/g' .env
+  sed -i "" 's/DB_DATABASE=laravel/DB_DATABASE=$1/g' .env
+  sed -i "" 's/DB_PASSWORD=/DB_PASSWORD=root/g' .env
+
   if [ $2 = "nova"  ];
   then 
 
     cat composer.json | jq '.repositories += [{"type": "composer", "url": "https://nova.laravel.com"}]' > composer.json
-    sed -i "" 's/=stack/=daily/g' .env
-    sed -i "" 's/=Laravel/=$1/g' .env
-    sed -i "" 's/http://localhost/https://$1.local/g' .env
     composer require laravel/nova
     php artisan nova:install
     php artisan migrate
     cat composer.json | .scripts += {"post-update-cmd": [         "@php artisan nova:publish"     ]} > composer.json
 
-  fi; 
+  fi
 
   mkdir src
   shopt -s dotglob
   mv $PWD/* $PWD/src
+
+  if [$3 = "mamp"];
+  then
+    /Applications/MAMP\ PRO.app/Contents/MacOS/MAMP\ PRO cmd createHost $4.local $PWD/src/public $4
+    /Applications/MAMP\ PRO.app/Contents/MacOS/MAMP\ PRO cmd stopServers
+  fi
+
   cd ..
   curl -sL "https://www.gitignore.io/api/vue,vim,vuejs,macos,windows,laravel,jetbrains,phpstorm+all,jetbrains+all,microsoftoffice;" > .gitignore
+
 }
 
-# Create a new Laravel Spark project and add the packages I use most.
-# Note: Assumes spark is on the path
+# Create a new Laravel project and add the packages I use most.
+# Note: Assumes laravel installer is on the path
 # Installs Dbal, Sentry for Laravel, Laravel Horizon, Redis Driver for Queues, Laravel Cookie Consent
 # Development: debugbar, dusk, query detector, ide helper, and telescope
 # Added support for Laravel Nova as optional paraemter 2:
@@ -831,7 +843,7 @@ function newlaravel(){
   #appends the ide-helper script to composer.json 
   cat composer.json | jq '.scripts += {"post-update-cmd": [ "Illuminate\\Foundation\\ComposerScripts::postUpdate", "@php artisan ide-helper:generate", "@php artisan ide-helper:meta"]}' > composer.json
 
-  if [ $2 = "nova"  ];
+  if [ $2 = "nova" ];
   then 
 
     cat composer.json | jq '.repositories += [{"type": "composer", "url": "https://nova.laravel.com"}]' > composer.json
