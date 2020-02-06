@@ -780,8 +780,20 @@ function add_blank_space(){
 # Usage: newspark projectname nova or newspark projectname 
 
 function newspark(){
-  spark new $1 --team-billing
-  cd $1
+
+  GREEN='\033[0;32m'
+  NC='\033[0m'
+  echo -e "${GREEN}What is the folder name? (No spaces)${NC}"
+  read foldername
+  echo -e "${GREEN}What is the project name?${NC}"
+  read projectname
+  echo -e "${GREEN}What is the local domain name?${NC}"
+  read localdomain
+  echo -e "${GREEN}What is the local database name?${NC}"
+  read localdatabase
+
+  spark new $foldername --team-billing -n
+  cd $foldername
   composer require doctrine/dbal sentry/sentry-laravel predis/predis spatie/laravel-cookie-consent
   composer require barryvdh/laravel-debugbar laravel/dusk beyondcode/laravel-query-detector barryvdh/laravel-ide-helper laravel/telescope orangehill/iseed --dev
   php artisan clear-compiled
@@ -789,35 +801,48 @@ function newspark(){
   php artisan vendor:publish --provider="BeyondCode\QueryDetector\QueryDetectorServiceProvider"
   php artisan vendor:publish --provider="Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider" --tag=config
   #appends the ide-helper script to composer.json 
-  cat composer.json | jq '.scripts += {"post-update-cmd": [ "Illuminate\\Foundation\\ComposerScripts::postUpdate", "@php artisan ide-helper:generate", "@php artisan ide-helper:meta"]}' > composer.json
+  cat composer.json | jq '.scripts += {"post-update-cmd": [ "Illuminate\\Foundation\\ComposerScripts::postUpdate", "@php artisan ide-helper:generate", "@php artisan ide-helper:meta"]}' > composer-temp.json && mv composer-temp.json composer.json
 
   sed -i "" 's/=stack/=daily/g' .env
-  sed -i "" 's/Laravel/$1/g' .env
+  sed -i "" "s/Laravel/$projectname/g" .env
   sed -i "" 's/http/https/g' .env
-  sed -i "" 's/localhost/$1.local/g' .env
-  sed -i "" 's/DB_DATABASE=laravel/DB_DATABASE=$1/g' .env
+  sed -i "" "s/localhost/$localdomain/g" .env
+  sed -i "" "s/DB_DATABASE=laravel/DB_DATABASE=$localdatabase/g" .env
   sed -i "" 's/DB_PASSWORD=/DB_PASSWORD=root/g' .env
 
-  if [ $2 = "nova"  ];
-  then 
+  while true; do
+      echo -e "${GREEN}Do you wish to install Laravel Nova?${NC}[y/n]" 
+      read yn
+      case $yn in
+          [Yy]* )
 
-    cat composer.json | jq '.repositories += [{"type": "composer", "url": "https://nova.laravel.com"}]' > composer.json
-    composer require laravel/nova
-    php artisan nova:install
-    php artisan migrate
-    cat composer.json | .scripts += {"post-update-cmd": [         "@php artisan nova:publish"     ]} > composer.json
-
-  fi
+          cat composer.json | jq '.repositories += [{"type": "composer", "url": "https://nova.laravel.com"}]' > composer-temp.json && mv composer-temp.json composer.json
+          composer require laravel/nova
+          php artisan nova:install
+          php artisan migrate
+          cat composer.json | jq '.scripts += {"post-update-cmd": [         "@php artisan nova:publish"     ]}' > composer-temp.json && mv composer-temp.json composer.json
+          break;;
+          [Nn]* ) break;;
+          * ) echo "Please answer yes or no.";;
+      esac
+  done
 
   mkdir src
   shopt -s dotglob
   mv $PWD/* $PWD/src
 
-  if [$3 = "mamp"];
-  then
-    /Applications/MAMP\ PRO.app/Contents/MacOS/MAMP\ PRO cmd createHost $4.local $PWD/src/public $4
-    /Applications/MAMP\ PRO.app/Contents/MacOS/MAMP\ PRO cmd stopServers
-  fi
+  while true; do
+      echo -e "${GREEN}Do you wish to create a mamp project?${NC}[y/n]" 
+      read yn
+      case $yn in
+          [Yy]* )     
+          /Applications/MAMP\ PRO.app/Contents/MacOS/MAMP\ PRO cmd createHost $4.local $PWD/src/public $4;
+          /Applications/MAMP\ PRO.app/Contents/MacOS/MAMP\ PRO cmd stopServers
+          break;;
+      [Nn]* ) break;;
+          * ) echo "Please answer yes or no.";;
+      esac
+  done
 
   cd ..
   curl -sL "https://www.gitignore.io/api/vue,vim,vuejs,macos,windows,laravel,jetbrains,phpstorm+all,jetbrains+all,microsoftoffice;" > .gitignore
@@ -846,14 +871,14 @@ function newlaravel(){
   if [ $2 = "nova" ];
   then 
 
-    cat composer.json | jq '.repositories += [{"type": "composer", "url": "https://nova.laravel.com"}]' > composer.json
+    cat composer.json | jq '.repositories += [{"type": "composer", "url": "https://nova.laravel.com"}]' > composer-temp.json && mv composer-temp.json composer.json
     sed -i "" 's/=stack/=daily/g' .env
     sed -i "" 's/=Laravel/=$1/g' .env
     sed -i "" 's/http://localhost/https://$1.local/g' .env
     composer require laravel/nova
     php artisan nova:install
     php artisan migrate
-    cat composer.json | .scripts += {"post-update-cmd": [         "@php artisan nova:publish"     ]} > composer.json
+    cat composer.json | jq '.scripts += {"post-update-cmd": [         "@php artisan nova:publish"     ]}' > composer-temp.json && mv composer-temp.json composer.json
 
   fi; 
 
@@ -866,15 +891,40 @@ function newlaravel(){
 
 function testspark()
 {
-    project=${1:-name};
-    nova=${2:-nova};
-    echo $nova;
-    if [ $# -eq 0 ]
-    then
-      echo "No arguments supplied."
-    else
-      echo "$# arguments supplied."
-    fi
+  RED='\033[0;31m'
+  GREEN='\033[0;32m'
+  NC='\033[0m'
+
+  echo -e "${GREEN}What is the project name?${NC}"
+  read projectname
+  echo -e "${GREEN}What is the local domain name?${NC}"
+  read localdomain
+  echo -e "${GREEN}What is the local database name?${NC}"
+  read localdatabase
+
+  while true; do
+      echo -e "${GREEN}Do you wish to install Laravel Nova?${NC}[y/n]" 
+      read yn
+      case $yn in
+          [Yy]* )
+
+          echo "Installing nova."
+          echo "Testing multi line"
+          break;;
+
+          [Nn]* ) break;;
+          * ) echo "Please answer y or n.";;
+      esac
+  done
+
+  echo $projectname $localdomain $localdatabase
+}
+
+function testlaravel()
+{
+      cdf
+      cat composer.json | jq '.repositories += [{"type": "composer", "url": "https://nova.laravel.com"}]' > composer-temp.json && mv composer-temp.json composer.json
+      cat composer.json | jq '.scripts += {"post-update-cmd": [         "@php artisan nova:publish"     ]}' > composer-temp.json && mv composer-temp.json composer.json
 }
 
 
