@@ -46,9 +46,8 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
 	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 
-# Load zshrc
-echo "Loading Zsh Config"
-[ -f ~/.zshrc ] && source ~/.zshrc
+# Remind user to open a new terminal
+echo "Done! Open a new terminal (zsh) to load your config."
 
 if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
