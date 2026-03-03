@@ -15,8 +15,18 @@ plugins=(
   fzf
   macos
   docker
+  docker-compose
   composer
   laravel
+  npm
+  nvm
+  extract
+  web-search
+  sudo
+  copypath
+  copyfile
+  history
+  jsontools
 )
 
 # Load Oh My Zsh
@@ -68,6 +78,19 @@ export NVM_DIR="$HOME/.nvm"
 # RVM & Composer paths
 export PATH="$PATH:$HOME/.rvm/bin"
 export PATH="$PATH:$HOME/.composer/vendor/bin"
+
+# Zoxide (smarter cd)
+command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
+
+# diff-so-fancy for git
+if command -v diff-so-fancy &>/dev/null; then
+    git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
+    git config --global interactive.diffFilter "diff-so-fancy --patch"
+fi
+
+# Modern CLI aliases (use new tools when available)
+command -v bat &>/dev/null && alias cat='bat --paging=never'
+command -v eza &>/dev/null && alias ls='eza' && alias l='eza -lah --git' && alias ll='eza -lh --git' && alias la='eza -lah --git'
 
 # Local overrides
 if [ -f "$HOME/.localrc" ] ; then

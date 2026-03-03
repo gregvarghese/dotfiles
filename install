@@ -1,69 +1,278 @@
 #!/usr/bin/env bash
 
+set -e
+
+# Colors for output
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+info()  { echo -e "${GREEN}[+]${NC} $1"; }
+warn()  { echo -e "${YELLOW}[!]${NC} $1"; }
+error() { echo -e "${RED}[x]${NC} $1"; }
+
 # Get Path to script folder
 DIR="$( cd "$( dirname "$0" )" && pwd )"
-# Fix path in case of symlinks
 DIR=$(cd "$DIR" && pwd -P)
 
-# Check for .dotfiles file and add symlink
+###############################################################################
+# Dotfiles Symlinks
+###############################################################################
+
 dotfiles="$HOME/.dotfiles"
-if [ -L $dotfiles ]; then
-	echo "Removing existing $dotfiles symlink"
-	rm $dotfiles
+if [ -L "$dotfiles" ]; then
+	info "Removing existing $dotfiles symlink"
+	rm "$dotfiles"
 fi
-if [ -d $dotfiles ]; then
-	echo "Found existing $dotfiles folder. Skipping directory."
+if [ -d "$dotfiles" ]; then
+	warn "Found existing $dotfiles folder. Skipping directory."
 else
-	echo "Linking $DIR => $dotfiles"
+	info "Linking $DIR => $dotfiles"
 	ln -s "$DIR" "$dotfiles"
 fi
 
-# Recursively map dotfiles to home directory
-echo "Installing individual dotfiles..."
+info "Installing individual dotfiles..."
 while IFS= read -d $'\0' -r file ; do
-	b=$(basename $file)
+	b=$(basename "$file")
 	c="$HOME/$b"
 	d="$file"
-	if [ -L $c ]; then
-		rm $c
+	if [ -L "$c" ]; then
+		rm "$c"
 	fi
-	if [ -f $c ]; then
-		echo -e "Kept existing:\t$d"
+	if [ -f "$c" ]; then
+		warn "Kept existing:\t$d"
 	else
 		ln -s "$d" "$c"
-		echo -e "Link created:\t$d"
+		info "Link created:\t$d"
 	fi
 done < <(find "$DIR" -type f \( -iname ".*" ! -iname ".git" ! -iname ".gitmodules" ! -iname "*.swp" \) -print0)
 
-# Throw in a .localrc if needed
-if [ ! -e $HOME/.localrc ]; then
-	echo -e "# This is your own .localrc file for your SUPER SECRET STUFF" > $HOME/.localrc
+# Create .localrc for local overrides
+if [ ! -e "$HOME/.localrc" ]; then
+	echo -e "# This is your own .localrc file for your SUPER SECRET STUFF" > "$HOME/.localrc"
+	info "Created ~/.localrc for local overrides"
 fi
 
-# Install Oh My Zsh if not already installed
+###############################################################################
+# Homebrew
+###############################################################################
+
+if ! command -v brew &> /dev/null; then
+	info "Installing Homebrew..."
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+	# Add Homebrew to PATH for Apple Silicon
+	if [ -f "/opt/homebrew/bin/brew" ]; then
+		eval "$(/opt/homebrew/bin/brew shellenv)"
+	fi
+else
+	info "Homebrew already installed, updating..."
+	brew update
+fi
+
+###############################################################################
+# CLI Tools
+###############################################################################
+
+info "Installing CLI tools..."
+
+cli_tools=(
+	wget
+	curl
+	git
+	tmux
+	node
+	jq
+	fzf
+	tree
+	python3
+	mas          # Mac App Store CLI
+	pngcrush
+	ffmpeg
+	ripgrep      # Fast recursive search (rg)
+	fd           # Modern find replacement
+	bat          # cat with syntax highlighting
+	eza          # Modern ls with git integration
+	htop         # Interactive process viewer
+	gh           # GitHub CLI
+	zoxide       # Smarter cd (z replacement)
+	httpie       # Friendlier curl for APIs
+	diff-so-fancy # Better git diff output
+	coreutils    # GNU core utilities
+	procs        # Modern ps replacement
+	act          # Run GitHub Actions locally
+)
+
+for tool in "${cli_tools[@]}"; do
+	if brew list "$tool" &>/dev/null; then
+		info "$tool already installed"
+	else
+		info "Installing $tool..."
+		brew install "$tool" || warn "Failed to install $tool"
+	fi
+done
+
+###############################################################################
+# Applications (Homebrew Casks)
+###############################################################################
+
+info "Installing applications..."
+
+cask_apps=(
+	# Browsers
+	firefox
+	vivaldi
+	arc
+
+	# Development
+	visual-studio-code
+	bbedit
+	docker
+	jetbrains-toolbox
+	postman
+	iterm2
+	warp
+
+	# Laravel / PHP
+	herd
+	tinkerwell
+	ray
+
+	# AI
+	claude
+	claude-code
+	chatgpt
+	codex
+
+	# Utilities
+	1password
+	vlc
+	rambox
+	slack
+	alfred
+	jdownloader
+	grammarly-desktop
+	rectangle
+	the-unarchiver
+	imageoptim
+	notion
+	zoom
+	ngrok
+)
+
+for app in "${cask_apps[@]}"; do
+	if brew list --cask "$app" &>/dev/null; then
+		info "$app already installed"
+	else
+		info "Installing $app..."
+		brew install --cask "$app" || warn "Failed to install $app"
+	fi
+done
+
+###############################################################################
+# FileZilla (direct download — no bundleware)
+# Not available via Homebrew (removed due to bundled adware in their installer).
+# We download the clean .tar.bz2 directly from the official server.
+###############################################################################
+
+if [ ! -d "/Applications/FileZilla.app" ]; then
+	info "Installing FileZilla (direct download, no bundleware)..."
+
+	FILEZILLA_VERSION="3.69.6"
+	if [[ "$(uname -m)" == "arm64" ]]; then
+		FILEZILLA_ARCH="macos-arm64"
+	else
+		FILEZILLA_ARCH="macosx-x86"
+	fi
+	FILEZILLA_URL="https://dl.filezilla-project.org/client/FileZilla_${FILEZILLA_VERSION}_${FILEZILLA_ARCH}.app.tar.bz2"
+	FILEZILLA_TMP=$(mktemp -d)
+
+	info "Downloading FileZilla ${FILEZILLA_VERSION} for ${FILEZILLA_ARCH}..."
+	if curl -fSL "$FILEZILLA_URL" -o "$FILEZILLA_TMP/filezilla.tar.bz2"; then
+		tar -xjf "$FILEZILLA_TMP/filezilla.tar.bz2" -C "$FILEZILLA_TMP"
+		mv "$FILEZILLA_TMP/FileZilla.app" /Applications/
+		info "FileZilla installed to /Applications"
+	else
+		warn "FileZilla download failed. Version may have changed."
+		warn "Download manually from: https://filezilla-project.org/download.php?show_all=1"
+	fi
+	rm -rf "$FILEZILLA_TMP"
+else
+	info "FileZilla already installed"
+fi
+
+###############################################################################
+# Dia Browser (not available via Homebrew)
+###############################################################################
+
+if [ ! -d "/Applications/Dia.app" ] && [ ! -d "/Applications/Dia Browser.app" ]; then
+	info "Installing Dia Browser..."
+	DIA_TMP=$(mktemp -d)
+	if curl -fSL "https://releases.diabrowser.com/release/Dia-latest.dmg" -o "$DIA_TMP/Dia.dmg"; then
+		hdiutil attach "$DIA_TMP/Dia.dmg" -quiet -mountpoint "$DIA_TMP/dia-mount"
+		cp -R "$DIA_TMP/dia-mount/"*.app /Applications/ 2>/dev/null || cp -R "$DIA_TMP/dia-mount/Dia.app" /Applications/
+		hdiutil detach "$DIA_TMP/dia-mount" -quiet
+		info "Dia Browser installed to /Applications"
+	else
+		warn "Dia Browser download failed. Install manually: https://releases.diabrowser.com/release/Dia-latest.dmg"
+	fi
+	rm -rf "$DIA_TMP"
+else
+	info "Dia Browser already installed"
+fi
+
+###############################################################################
+# Oh My Zsh
+###############################################################################
+
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
-	echo "Installing Oh My Zsh..."
+	info "Installing Oh My Zsh..."
 	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+else
+	info "Oh My Zsh already installed"
 fi
 
-# Remind user to open a new terminal
-echo "Done! Open a new terminal (zsh) to load your config."
+###############################################################################
+# Vim & Tmux
+###############################################################################
 
 if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
+	info "Installing vim-plug..."
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+else
+	info "vim-plug already installed"
 fi
 
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+	info "Installing tmux plugin manager..."
 	git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 	if ! { [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; } then
-		tmux source-file "$HOME/.tmux.conf"
+		tmux source-file "$HOME/.tmux.conf" 2>/dev/null || true
 	fi
+else
+	info "tmux plugin manager already installed"
 fi
 
-# Install Homebrew if not already installed
-if ! command -v brew &> /dev/null; then
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+###############################################################################
+# FZF keybindings
+###############################################################################
+
+if [ -f "$(brew --prefix)/opt/fzf/install" ]; then
+	info "Setting up FZF keybindings..."
+	"$(brew --prefix)/opt/fzf/install" --key-bindings --completion --no-update-rc --no-bash --no-fish
 fi
-brew install wget curl
-#curl -s 'https://api.macapps.link/en/firefox-chrome-evernote-dropbox-alfred-hyperswitch-fantastical-sublime-pycharm-dash-vscode-docker-insomnia-phpstorm-bbedit-iterm-unarchiver-filezilla-fluid-teamviewer-caffeine-flux-cloudapp-spectacle-vlc-adium-slack' | sh
+
+###############################################################################
+# Done
+###############################################################################
+
+echo ""
+info "============================================"
+info "  Installation complete!"
+info "============================================"
+echo ""
+info "Open a new terminal (zsh) to load your config."
+warn "Run 'vim +PlugInstall' to install vim plugins."
+warn "Run 'tmux' then prefix + I to install tmux plugins."
