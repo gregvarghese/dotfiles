@@ -3,7 +3,7 @@
 ################################################################################
 
 # Helper to test if executable exists
-exists() { type -t "$1" > /dev/null 2>&1; }
+exists() { whence "$1" > /dev/null 2>&1; }
 
 # Helper to clean vars
 function trimspace() {
@@ -225,19 +225,20 @@ function extract() {
 
 # Create a horizontal rule, hr style
 function hr() {
-	set -f
+	setopt NO_GLOB
 	if [[ -n $1 ]]; then
 		space_character=$( echo "$1" | head -c 1)
 	else
 		space_character='='
 	fi
-	
+
 	for i in $(seq 1 "$(tput cols)");
 	do
 		echo -n "${space_character}";
 	done
 
 	echo ""
+	unsetopt NO_GLOB
 }
 
 # Move file to a backup ".old" version
@@ -422,22 +423,17 @@ zipf () { zip -r "$1".zip "$1" ; }          # zipf:         To create a ZIP arch
 # install the items that are missing.
 
 function to_install() {
-  local debug desired installed i desired_s installed_s remain
+  local debug
+  local -a desired installed desired_s installed_s remain
   if [[ "$1" == 1 ]]; then debug=1; shift; fi
     # Convert args to arrays, handling both space- and newline-separated lists.
-    read -ra desired < <(echo "$1" | tr '\n' ' ')
-    read -ra installed < <(echo "$2" | tr '\n' ' ')
+    desired=( ${(s/ /)$(echo "$1" | tr '\n' ' ')} )
+    installed=( ${(s/ /)$(echo "$2" | tr '\n' ' ')} )
     # Sort desired and installed arrays.
-    unset i; while read -r; do desired_s[i++]=$REPLY; done < <(
-      printf "%s\n" "${desired[@]}" | sort
-    )
-    unset i; while read -r; do installed_s[i++]=$REPLY; done < <(
-      printf "%s\n" "${installed[@]}" | sort
-    )
+    desired_s=( ${(o)desired} )
+    installed_s=( ${(o)installed} )
     # Get the difference. comm is awesome.
-    unset i; while read -r; do remain[i++]=$REPLY; done < <(
-      comm -13 <(printf "%s\n" "${installed_s[@]}") <(printf "%s\n" "${desired_s[@]}")
-  )
+    remain=( ${(f)"$(comm -13 <(printf "%s\n" "${desired_s[@]}") <(printf "%s\n" "${installed_s[@]}"))"} )
   [[ "$debug" ]] && for v in desired desired_s installed installed_s remain; do
     echo "$v ($(eval echo "\${#$v[*]}")) $(eval echo "\${$v[*]}")"
   done
@@ -747,9 +743,9 @@ members () {
 
 confirm () {
     # call with a prompt string or use a default
-    read -r -p "${1:-Are you sure? [y/N]} " response
+    read "response?${1:-Are you sure? [y/N]} "
     case $response in
-        [yY][eE][sS]|[yY]) 
+        [yY][eE][sS]|[yY])
             true
             ;;
         *)
@@ -784,13 +780,13 @@ function newspark(){
   GREEN='\033[0;32m'
   NC='\033[0m'
   echo -e "${GREEN}What is the folder name? (No spaces)${NC}"
-  read foldername
+  read "foldername?"
   echo -e "${GREEN}What is the project name?${NC}"
-  read projectname
+  read "projectname?"
   echo -e "${GREEN}What is the local domain name?${NC}"
-  read localdomain
+  read "localdomain?"
   echo -e "${GREEN}What is the local database name?${NC}"
-  read localdatabase
+  read "localdatabase?"
 
   spark new $foldername --team-billing -n
   cd $foldername
@@ -811,8 +807,8 @@ function newspark(){
   sed -i "" 's/DB_PASSWORD=/DB_PASSWORD=root/g' .env
 
   while true; do
-      echo -e "${GREEN}Do you wish to install Laravel Nova?${NC}[y/n]" 
-      read yn
+      echo -e "${GREEN}Do you wish to install Laravel Nova?${NC}[y/n]"
+      read "yn?"
       case $yn in
           [Yy]* )
 
@@ -828,12 +824,13 @@ function newspark(){
   done
 
   mkdir src
-  shopt -s dotglob
+  setopt DOTGLOB
   mv $PWD/* $PWD/src
+  unsetopt DOTGLOB
 
   while true; do
-      echo -e "${GREEN}Do you wish to create a mamp project?${NC}[y/n]" 
-      read yn
+      echo -e "${GREEN}Do you wish to create a mamp project?${NC}[y/n]"
+      read "yn?"
       case $yn in
           [Yy]* )     
           /Applications/MAMP\ PRO.app/Contents/MacOS/MAMP\ PRO cmd createHost $4.local $PWD/src/public $4;
@@ -883,8 +880,9 @@ function newlaravel(){
   fi; 
 
   mkdir src
-  shopt -s dotglob
+  setopt DOTGLOB
   mv $PWD/* $PWD/src
+  unsetopt DOTGLOB
   cd ..
   curl -sL "https://www.gitignore.io/api/vue,vim,vuejs,macos,windows,laravel,jetbrains,phpstorm+all,jetbrains+all,microsoftoffice;" > .gitignore
 }
@@ -896,15 +894,15 @@ function testspark()
   NC='\033[0m'
 
   echo -e "${GREEN}What is the project name?${NC}"
-  read projectname
+  read "projectname?"
   echo -e "${GREEN}What is the local domain name?${NC}"
-  read localdomain
+  read "localdomain?"
   echo -e "${GREEN}What is the local database name?${NC}"
-  read localdatabase
+  read "localdatabase?"
 
   while true; do
-      echo -e "${GREEN}Do you wish to install Laravel Nova?${NC}[y/n]" 
-      read yn
+      echo -e "${GREEN}Do you wish to install Laravel Nova?${NC}[y/n]"
+      read "yn?"
       case $yn in
           [Yy]* )
 

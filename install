@@ -40,9 +40,15 @@ if [ ! -e $HOME/.localrc ]; then
 	echo -e "# This is your own .localrc file for your SUPER SECRET STUFF" > $HOME/.localrc
 fi
 
-# Load up new bash profile
-echo "Loading Bash Profile"
-source ~/.bash_profile
+# Install Oh My Zsh if not already installed
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+	echo "Installing Oh My Zsh..."
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
+
+# Load zshrc
+echo "Loading Zsh Config"
+[ -f ~/.zshrc ] && source ~/.zshrc
 
 if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
@@ -56,6 +62,9 @@ if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
 	fi
 fi
 
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+# Install Homebrew if not already installed
+if ! command -v brew &> /dev/null; then
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
 brew install wget curl
-curl -s 'https://api.macapps.link/en/firefox-chrome-evernote-dropbox-alfred-hyperswitch-fantastical-sublime-pycharm-dash-vscode-docker-insomnia-phpstorm-bbedit-iterm-unarchiver-filezilla-fluid-teamviewer-caffeine-flux-cloudapp-spectacle-vlc-adium-slack' | sh
+#curl -s 'https://api.macapps.link/en/firefox-chrome-evernote-dropbox-alfred-hyperswitch-fantastical-sublime-pycharm-dash-vscode-docker-insomnia-phpstorm-bbedit-iterm-unarchiver-filezilla-fluid-teamviewer-caffeine-flux-cloudapp-spectacle-vlc-adium-slack' | sh

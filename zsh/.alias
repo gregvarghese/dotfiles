@@ -8,14 +8,14 @@ ls --color=auto &> /dev/null && alias ls='ls --color=auto' ||
 # basic shell aliases
 alias lsd='ls -Gl | grep "^d"'
 alias lsort='echo "========== Newest ==========" && ls -At1 && echo "========== Oldest =========="'
-alias reload="source ~/.bash_profile && clear"
+alias reload="source ~/.zshrc && clear"
 alias cd..="cd .."
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ......="cd ../../../../.."
-alias please='sudo $(history -p !!)'
+alias please='sudo !!'
 alias cls="clear; ls"
 
 # aliases to default commands with certain switches
@@ -25,7 +25,7 @@ alias l='ls -GFla'
 
 # update scripts
 alias systemupdate='sudo softwareupdate -i -a; brew update; brew upgrade'
-alias shellupdate='cd ~/.dotfiles && git pull && cd - && ~/.dotfiles/install && reload && clear'
+alias shellupdate='cd ~/.dotfiles && git pull && cd - && ~/.dotfiles/install && source ~/.zshrc && clear'
 # Get OS X Software Updates, and update installed Ruby gems, Homebrew, npm, and their installed packages
 alias update='sudo softwareupdate -i -a; brew update; brew upgrade; brew cleanup; npm update npm -g; npm update -g; sudo gem update'
 
@@ -98,11 +98,11 @@ alias julia="exec '/Applications/Julia-0.2.0.app/Contents/Resources/julia/bin/ju
 #   -----------------------------
 alias f='open -a Finder ./'                 # f:            Opens current directory in MacOS Finder
 alias ~="cd ~"                              # ~:            Go Home
-alias path='echo -e ${PATH//:/\\n}'         # path:         Echo all executable Paths
-alias show_options='shopt'                  # Show_options: display bash options settings
+alias path='print -l ${(s/:/)PATH}'         # path:         Echo all executable Paths
+alias show_options='setopt'                 # Show_options: display zsh options settings
 mcd () { mkdir -p "$1" && cd "$1"; }        # mcd:          Makes new Dir and jumps inside
 ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in MacOS Quicklook Preview
-alias which='type -all'                     # which:        Find executables
+alias which='whence -va'                    # which:        Find executables
 alias numFiles='echo $(ls -1 | wc -l)'      # numFiles:     Count of non-hidden files in current dir
 alias qfind="find . -name "                 # qfind:    Quickly search for file
 ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the current directory

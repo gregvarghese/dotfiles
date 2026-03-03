@@ -4,11 +4,10 @@
 
 # vars
 export EDITOR="nano"
-export HISTCONTRAL=ignoredups
-export HISTFILESIZE=10000
-export HISTZIE=10000
+export HISTSIZE=10000
+export SAVEHIST=10000
+export HISTFILE="$HOME/.zsh_history"
 export HISTIGNORE="clear:keybase*"
-export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 export LSCOLORS=gxfxcxdxbxggedabagacad
 export CLICOLOR=1
 export R_LIBS="$HOME/.rlib"
@@ -65,11 +64,12 @@ PATH=${PATH}:${HOME}/.gem/bin
 
 
 # options
-shopt -s cdspell
-shopt -s checkwinsize
-shopt -s histappend
-shopt -s nocaseglob
+setopt CORRECT
+setopt APPEND_HISTORY
+setopt NO_CASE_GLOB
+setopt HIST_IGNORE_DUPS
+setopt SHARE_HISTORY
 
 # use vim on the command line
-# set -o vi
+# bindkey -v
 
